@@ -10,7 +10,7 @@ Client se connectant a un serveur TCP/IP, qui est un autre projet
   Le programme permet pour le moment de se connecter a un serveur
 
 
-'''C
+```C
     int main()
     {
         long test = 0;
@@ -18,4 +18,4 @@ Client se connectant a un serveur TCP/IP, qui est un autre projet
       
          retunn 0;
     }
-'''    
+```    
