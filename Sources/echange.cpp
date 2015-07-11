@@ -3,11 +3,7 @@
 using namespace std;
 
 
-Client::Client() : m_erreur(0),
-				   m_pseudo(DEFAULT_PSEUDO),
-				   m_port(DEFAULT_PORT),
-				   m_portMusique(DEFAULT_PORT_MUSIQUE),
-				   m_ipServeur(DEFAULT_IP)
+Client::Client() : m_erreur(0), m_pseudo(DEFAULT_PSEUDO), m_port(DEFAULT_PORT), m_portMusique(DEFAULT_PORT_MUSIQUE), m_ipServeur(DEFAULT_IP)
 {
 	WSADATA WSAData;
 	if (WSAStartup(MAKEWORD(2, 0), &WSAData) != 0)
@@ -28,11 +24,7 @@ Client::Client() : m_erreur(0),
 	m_sinMusique.sin_port = htons(m_portMusique);  
 }
 
-Client::Client(u_short port, string ip, string pseudo) : m_erreur(0),
-														 m_pseudo(pseudo),
-														 m_port(port),
-														 m_portMusique(DEFAULT_PORT_MUSIQUE),
-														 m_ipServeur(ip)
+Client::Client(u_short port, string ip, string pseudo) : m_erreur(0), m_pseudo(pseudo), m_port(port), m_portMusique(DEFAULT_PORT_MUSIQUE), m_ipServeur(ip)
 														 
 
 {
@@ -42,7 +34,6 @@ Client::Client(u_short port, string ip, string pseudo) : m_erreur(0),
 		cout << "Erreur de la fonction WSAStarup dans le constructeur de la classe client" << endl;
 		m_erreur = WSAGetLastError();
 		cout << "Erreur " << m_erreur << endl;
-
 	}
 
 	m_sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -54,7 +45,6 @@ Client::Client(u_short port, string ip, string pseudo) : m_erreur(0),
 	m_sinMusique.sin_addr.s_addr = inet_addr(m_ipServeur.c_str());
 	m_sinMusique.sin_family = AF_INET;
 	m_sinMusique.sin_port = htons(m_portMusique);
-
 }
 
 Client::~Client()
@@ -90,8 +80,7 @@ int Client::connexionAuServeur()
 		cout << "Erreur " << m_erreur << endl;
 
 		return m_erreur;
-	}
-		
+	}	
 }
 
 int Client::envoieMessage()
@@ -122,7 +111,6 @@ void Client::recevoirMessage()
 		while (commande() != QUITTER && commandeServeur() != SERVEUR_OFF)
 		{
 			m_resultat = recv(m_sock, m_buffer, 4096, 0);
-			commandeServeur();
 			if (m_resultat > 0)
 			{
 				cout << endl << m_pseudoServeur << ">" << m_buffer << endl;
@@ -134,6 +122,8 @@ void Client::recevoirMessage()
 
 int Client::recevoirMusique()
 {
+	for (int i = 0; i < 512; ++i)
+		m_buffer[i] = 0;
 	cout << "Fonction musique" << endl;
 	//Connexion au port diffusant la musique
 	if (m_sockMusique == INVALID_SOCKET)
@@ -212,8 +202,9 @@ int Client::commandeServeur()
 {
 	if (m_buffer[0] != '/')
 		return NO_COMMANDE;
-	else if (strstr(m_buffer, "/music") != NULL)
+	else if (m_buffer[1] == 'm' && m_buffer[2] == 'u' && m_buffer[3] == 's' && m_buffer[4] == 'i' && m_buffer[5] == 'c' )
 	{
+		cout << "reconnaisance" << endl;
 		recevoirMusique();
 		return SERVEUR_MUSIQUE;
 	}

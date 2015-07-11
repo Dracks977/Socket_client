@@ -27,16 +27,15 @@ int main(int argc, char* argv[])
 	string pseudo;
 
 	cout << "================================Chat socket TCP=================================" << endl;
-	/*cout << "Adresse IP du serveur: ";
+	cout << "Adresse IP du serveur: ";
 	cin.getline(ip, 19);
 	cout << "Sur le port: ";
 	cin >> port;
 	cout << "Pseudo: ";
-	cin >> pseudo;*/
+	cin >> pseudo;
 
 
-	//Client c(port, ip, pseudo);
-	Client c;
+	Client c(port, ip, pseudo);
 	c.connexionAuServeur();
 	c.envoieMessage();
 
