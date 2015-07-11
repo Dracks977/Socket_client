@@ -207,8 +207,8 @@ public:
 	~Client();
 
 private:
-	SOCKET m_sock; /*!< Socket de connexion*/
-	SOCKET m_sockMusique; /*!< Socket permettant la reception de musique*/
+	SOCKET *m_sock; /*!< Socket de connexion*/
+	SOCKET *m_sockMusique; /*!< Socket permettant la reception de musique*/
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusique;
 	u_short *m_port;/*!< Port du serveur */
