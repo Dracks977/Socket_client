@@ -58,6 +58,23 @@ public:
 	 *\param pseudo : pPseudo du client 
 	 */
 	Client(u_short port, std::string ip, std::string pseudo);
+	/*!
+	* \brief Constructeur par defaut de la classe CLient
+	*
+	*Constructeur qui attribut les valeur par defaut au client\n
+	*On a donc
+	*\code
+	m_erreur = 0;
+	m_pseudo = DEFAULT_PSEUDO //client
+	m_port = DEFAULT_PORT //5567
+	m_portMusique = DEFAULT_PORT_MUSIQUE //5568
+	m_ipServeur = DEFAULT_IP //127.0.0.1
+	*\endcode
+	*
+	*\param port : port du serveur distant
+	*\param ip : Adresse IP du serveur distant
+	*\param pseudo : pPseudo du client
+	*/
 	Client();
 	/*!
 	* \brief Connexion au serveur
@@ -195,12 +212,13 @@ private:
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusique;
 	u_short m_port;/*!< Port du serveur */
-	u_short m_portMusique;
+	u_short m_portMusique;/*!< Port du serveur pour la reception de musique*/
 	std::string m_ipServeur;/*!< Adresse IP du serveur*/
 	std::string m_pseudo;/*!< Pseudo du client*/
 	std::string m_message;/*!< Message envoye par le client*/
 	char m_pseudoServeur[30];/*!< Nom envoye par le serveur*/
 	char m_buffer[512];/*!< Buffer utiliser pour la reception des messages*/
+	char m_bufferMusique[512];/*!< Buffer utiliser pour la reception de fichier musique*/
 	int m_resultat;/*!< Variable utilisee pour obtenir le resultat des fonction send(), recv(), ou connect()*/
 	int m_erreur; /*!< Variable renvoyant le code de la derniere erreur*/
 };

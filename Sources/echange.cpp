@@ -149,11 +149,10 @@ int Client::recevoirMusique()
 		return m_erreur;
 	}
 	//Recuperation de la taille du fichier
-	char bufferM[512];
 	long size;
 	stringstream convertion;
-	m_resultat = recv(m_sockMusique, bufferM, 512, 0);
-	convertion << bufferM;
+	m_resultat = recv(m_sockMusique, m_bufferMusique, 512, 0);
+	convertion << m_bufferMusique;
 	convertion >> size;
 	cout << "Taille: " << size << "octets" << endl;
     //Ouverture du fichier d'ecriture
@@ -171,10 +170,12 @@ int Client::recevoirMusique()
 		for (int i = 0; i < size; i += 512)
 		{
 			i++;
-			m_resultat = recv(m_sockMusique, bufferM, 512, 0);
-			fichierEcriture.write(bufferM, 512);
+			m_resultat = recv(m_sockMusique, m_bufferMusique, 512, 0);
+			fichierEcriture.write(m_bufferMusique, 512);
 		}
 		cout << "Fin de la reception" << endl;
+		for (int i = 0; i < 512; ++i)
+			m_bufferMusique[i] = 0;
 		return 0;
 	}
 }
@@ -202,9 +203,8 @@ int Client::commandeServeur()
 {
 	if (m_buffer[0] != '/')
 		return NO_COMMANDE;
-	else if (m_buffer[1] == 'm' && m_buffer[2] == 'u' && m_buffer[3] == 's' && m_buffer[4] == 'i' && m_buffer[5] == 'c' )
+	else if (m_buffer[1] == 'm' && m_buffer[2] == 'u' && m_buffer[3] == 's' && m_buffer[4] == 'i' && m_buffer[5] == 'c')
 	{
-		cout << "reconnaisance" << endl;
 		recevoirMusique();
 		return SERVEUR_MUSIQUE;
 	}
