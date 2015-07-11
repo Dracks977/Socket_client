@@ -216,11 +216,11 @@ private:
 	std::string m_ipServeur;/*!< Adresse IP du serveur*/
 	std::string m_pseudo;/*!< Pseudo du client*/
 	std::string m_message;/*!< Message envoye par le client*/
-	char m_pseudoServeur[30];/*!< Nom envoye par le serveur*/
-	char m_buffer[512];/*!< Buffer utiliser pour la reception des messages*/
-	char m_bufferMusique[512];/*!< Buffer utiliser pour la reception de fichier musique*/
-	int m_resultat;/*!< Variable utilisee pour obtenir le resultat des fonction send(), recv(), ou connect()*/
-	int m_erreur; /*!< Variable renvoyant le code de la derniere erreur*/
+	char *m_pseudoServeur;/*!< Nom envoye par le serveur*/
+	char *m_buffer;/*!< Buffer utiliser pour la reception des messages*/
+	char *m_bufferMusique;/*!< Buffer utiliser pour la reception de fichier musique*/
+	int *m_resultat;/*!< Variable utilisee pour obtenir le resultat des fonction send(), recv(), ou connect()*/
+	int *m_erreur; /*!< Variable renvoyant le code de la derniere erreur*/
 };
 
 #endif   // ECHANGE_H

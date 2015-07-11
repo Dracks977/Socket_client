@@ -38,15 +38,6 @@ int main(int argc, char* argv[])
 	Client c(port, ip, pseudo);
 	c.connexionAuServeur();
 	c.envoieMessage();
-
-	/*if (c.envoieMessage() == 1)
-	{
-		cout << "DOUBLE";
-		c.~Client();
-	}*/
-
 	system("PAUSE");
 	return 0;
 }
-
-//Test
