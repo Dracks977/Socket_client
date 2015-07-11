@@ -3,7 +3,8 @@
 using namespace std;
 
 
-Client::Client() : m_port(0), m_portMusique(0), m_ipServeur(0)
+Client::Client() : m_sock(0), m_sockMusique(0), m_port(0), m_portMusique(0), m_ipServeur(0), m_pseudo(0), m_message(0), m_pseudoServeur(0),
+m_buffer(0), m_bufferMusique(0), m_resultat(0), m_erreur(0)
 {
 	m_erreur = new int;
 	m_resultat = new int;
@@ -44,7 +45,8 @@ Client::Client() : m_port(0), m_portMusique(0), m_ipServeur(0)
 	m_sinMusique.sin_port = htons(*m_portMusique);  
 }
 
-Client::Client(u_short port, string ip, string pseudo) : m_port(0), m_portMusique(0), m_ipServeur(0)
+Client::Client(u_short port, string ip, string pseudo) : m_sock(0), m_sockMusique(0), m_port(0), m_portMusique(0), m_ipServeur(0), m_pseudo(0),
+													m_message(0), m_pseudoServeur(0), m_buffer(0), m_bufferMusique(0), m_resultat(0), m_erreur(0)
 {
 	m_erreur = new int;
 	m_resultat = new int;
@@ -102,7 +104,6 @@ Client::~Client()
 	delete m_bufferMusique;
 	delete m_resultat;
 	delete m_erreur;
-
 }
 
 int Client::connexionAuServeur()
@@ -151,9 +152,10 @@ int Client::envoieMessage()
 			cout << *m_pseudo << ">";
 		}
 
-		return 0;
+		return QUITTER;
 	}
-	return 1;
+	else
+	  return 1;
 }
 
 void Client::recevoirMessage()
@@ -207,7 +209,7 @@ int Client::recevoirMusique()
 	convertion << m_bufferMusique;
 	convertion >> size;
 	cout << "Taille: " << size << "octets" << endl;
-    //Ouverture du fichier d'ecriture
+	//Ouverture du fichier d'ecriture
 	ofstream fichierEcriture("temporaire.mp3", ofstream::binary | ios::app);
 	//Si le fichier ne s'ouvre pas
 	if (!fichierEcriture)

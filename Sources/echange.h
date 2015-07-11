@@ -32,9 +32,10 @@ enum Commandes
 	QUITTER = 101, /*!< Le client a saisit \a /quit (101) */
 	REDEMARER = 102, /*!< Le client a saisit a /restart (102) */
 	PSEUDO = 103, /*!< Le client a saisit  \a /pseudo + \c NouveauPseudo  (103) */
-	SAVE = 104, /*<! Le client a saisit /a /save (404) */
-	LISTE = 104, /*!< Le client a saisit \a /liste (104)*/
+	SAVE = 104, /*<! Le client a saisit /a /save (104) */
+	LISTE = 105, /*!< Le client a saisit \a /liste (105)*/
 	MUSIQUE = 105, /*!< Le client a saisit \a /music (105)*/
+	CONNEXION = 106, /*!< Le client a saisit \a /connect (106)*/
     SERVEUR_OFF = 901,/*!< Le serveur a envoye \a /off  (901)*/
 	SERVEUR_KICK = 902, /*!< Le serveur a envoye \a /kick (902)*/
 	SERVEUR_MUSIQUE = 903 /*!< Le serveur a envoye \a /music (903)*/

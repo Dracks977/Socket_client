@@ -37,7 +37,11 @@ int main(int argc, char* argv[])
 
 	Client c(port, ip, pseudo);
 	c.connexionAuServeur();
-	c.envoieMessage();
-	system("PAUSE");
+	if (c.envoieMessage())
+	{
+		cout << "Fermeture du programme" << endl;
+		c.~Client();
+	}
+
 	return 0;
 }
