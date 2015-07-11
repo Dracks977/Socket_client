@@ -211,11 +211,11 @@ private:
 	SOCKET m_sockMusique; /*!< Socket permettant la reception de musique*/
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusique;
-	u_short m_port;/*!< Port du serveur */
-	u_short m_portMusique;/*!< Port du serveur pour la reception de musique*/
-	std::string m_ipServeur;/*!< Adresse IP du serveur*/
-	std::string m_pseudo;/*!< Pseudo du client*/
-	std::string m_message;/*!< Message envoye par le client*/
+	u_short *m_port;/*!< Port du serveur */
+	u_short *m_portMusique;/*!< Port du serveur pour la reception de musique*/
+	std::string *m_ipServeur;/*!< Adresse IP du serveur*/
+	std::string *m_pseudo;/*!< Pseudo du client*/
+	std::string *m_message;/*!< Message envoye par le client*/
 	char *m_pseudoServeur;/*!< Nom envoye par le serveur*/
 	char *m_buffer;/*!< Buffer utiliser pour la reception des messages*/
 	char *m_bufferMusique;/*!< Buffer utiliser pour la reception de fichier musique*/

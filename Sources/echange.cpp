@@ -3,18 +3,25 @@
 using namespace std;
 
 
-Client::Client() : m_pseudo(DEFAULT_PSEUDO), m_port(DEFAULT_PORT), m_portMusique(DEFAULT_PORT_MUSIQUE), m_ipServeur(DEFAULT_IP)
+Client::Client() : m_port(0), m_portMusique(0), m_ipServeur(0)
 {
-
-
 	m_erreur = new int;
-	*m_erreur = 0;
 	m_resultat = new int;
-	*m_resultat = 0;
 	m_bufferMusique = new char[512];
 	m_buffer = new char[512];
 	m_pseudoServeur = new char[30];
+	m_message = new string;
+	m_pseudo = new string;
+	m_ipServeur = new string;
+	m_portMusique = new u_short;
+	m_port = new u_short;
 
+	*m_erreur = 0;
+	*m_resultat = 0;
+	*m_pseudo = DEFAULT_PSEUDO;
+	*m_ipServeur = DEFAULT_IP;
+	*m_portMusique = DEFAULT_PORT_MUSIQUE;
+	*m_port = DEFAULT_PORT;
 
 
 	WSADATA WSAData;
@@ -26,24 +33,35 @@ Client::Client() : m_pseudo(DEFAULT_PSEUDO), m_port(DEFAULT_PORT), m_portMusique
 	}
 
 	m_sock = socket(AF_INET, SOCK_STREAM, 0);
-	m_sin.sin_addr.s_addr = inet_addr(m_ipServeur.c_str());
+	m_sin.sin_addr.s_addr = inet_addr(m_ipServeur[0].c_str());
 	m_sin.sin_family = AF_INET;
-	m_sin.sin_port = htons(m_port);
+	m_sin.sin_port = htons(*m_port);
 
 	m_sockMusique = socket(AF_INET, SOCK_STREAM, 0);
-	m_sinMusique.sin_addr.s_addr = inet_addr(m_ipServeur.c_str());
+	m_sinMusique.sin_addr.s_addr = inet_addr(m_ipServeur[0].c_str());
 	m_sinMusique.sin_family = AF_INET;
-	m_sinMusique.sin_port = htons(m_portMusique);  
+	m_sinMusique.sin_port = htons(*m_portMusique);  
 }
 
-Client::Client(u_short port, string ip, string pseudo) : m_pseudo(pseudo), m_port(port), m_portMusique(DEFAULT_PORT_MUSIQUE), m_ipServeur(ip)
+Client::Client(u_short port, string ip, string pseudo) : m_port(0), m_portMusique(0), m_ipServeur(0)
 {
 	m_erreur = new int;
-	*m_erreur = 0;
 	m_resultat = new int;
-	*m_resultat = 0;
 	m_bufferMusique = new char[512];
+	m_buffer = new char[512];
+	m_pseudoServeur = new char[30];
+	m_message = new string;
+	m_pseudo = new string;
+	m_ipServeur = new string;
+	m_portMusique = new u_short;
+	m_port = new u_short;
 
+	*m_erreur = 0;
+	*m_resultat = 0;
+	*m_pseudo = pseudo;
+	*m_ipServeur = ip;
+	*m_portMusique = DEFAULT_PORT_MUSIQUE;
+	*m_port = port;
 
 	WSADATA WSAData;
 	if (WSAStartup(MAKEWORD(2, 0), &WSAData) != 0)
@@ -54,14 +72,14 @@ Client::Client(u_short port, string ip, string pseudo) : m_pseudo(pseudo), m_por
 	}
 
 	m_sock = socket(AF_INET, SOCK_STREAM, 0);
-	m_sin.sin_addr.s_addr = inet_addr(m_ipServeur.c_str());
+	m_sin.sin_addr.s_addr = inet_addr(m_ipServeur[0].c_str());
 	m_sin.sin_family = AF_INET;
-	m_sin.sin_port = htons(m_port);
+	m_sin.sin_port = htons(*m_port);
 
 	m_sockMusique = socket(AF_INET, SOCK_STREAM, 0);
-	m_sinMusique.sin_addr.s_addr = inet_addr(m_ipServeur.c_str());
+	m_sinMusique.sin_addr.s_addr = inet_addr(m_ipServeur[0].c_str());
 	m_sinMusique.sin_family = AF_INET;
-	m_sinMusique.sin_port = htons(m_portMusique);
+	m_sinMusique.sin_port = htons(*m_portMusique);
 }
 
 Client::~Client()
@@ -81,11 +99,11 @@ int Client::connexionAuServeur()
         
 		return *m_erreur;
 	}
-    cout << endl << "Connexion au serveur: " << m_ipServeur << " sur le port " << m_port << endl;
+    cout << endl << "Connexion au serveur " << *m_ipServeur << " sur le port " << *m_port << endl;
 	if (connect(m_sock, (SOCKADDR *)&m_sin, sizeof(m_sin)) == 0)
 	{
 		recv(m_sock, m_pseudoServeur, 30, 0);
-	    cout << "Connexion etablie avec " << m_pseudoServeur << endl;
+	    cout << "Connexion etablie avec " << *m_pseudoServeur << endl;
 
 		return 0;
 	}
@@ -108,12 +126,12 @@ int Client::envoieMessage()
 	{
 		while (commande() != QUITTER )//On verifie que l'utilisateur n'ai pas saisie '/quit'
 		{
-			getline(cin, m_message);
-			if (send(m_sock, m_message.c_str(), sizeof(m_message), 0) != sizeof(m_message))
+			getline(cin, *m_message);
+			if (send(m_sock, m_message[0].c_str(), sizeof(*m_message), 0) != sizeof(*m_message))
 			{
 				cout << "Impossible d'envoyer le message a " << m_ipServeur << " ! Erreur: " << WSAGetLastError() << endl;
 			}
-			cout << m_pseudo << ">";
+			cout << *m_pseudo << ">";
 		}
 
 		return 0;
@@ -130,8 +148,8 @@ void Client::recevoirMessage()
 			*m_resultat = recv(m_sock, m_buffer, 4096, 0);
 			if (*m_resultat > 0)
 			{
-				cout << endl << m_pseudoServeur << ">" << m_buffer << endl;
-				cout << m_pseudo << ">" << m_message;
+				cout << endl << *m_pseudoServeur << ">" << *m_buffer << endl;
+				cout << *m_pseudo << ">";
 			}
 		}
 	}
@@ -201,16 +219,16 @@ int Client::recevoirMusique()
 
 int Client::commande()
 {
-	if (m_message == "/quit")
+	if (*m_message == "/quit")
 		return QUITTER;
-	else if (m_message == "/reboot")
+	else if (*m_message == "/reboot")
 		return REDEMARER;
-	else if (m_message == "/save")
+	else if (*m_message == "/save")
 	{
 		sauvegardeParametre();
 		return SAVE;
 	}
-	else if (m_message == "/liste")
+	else if (*m_message == "/liste")
 		return LISTE;
 	else
 		return NO_COMMANDE;
@@ -241,7 +259,7 @@ int Client::sauvegardeParametre()
 		fichierSauvegarde << m_ipServeur;
 		fichierSauvegarde << endl;
 		fichierSauvegarde << m_port<< endl;
-		fichierSauvegarde << m_pseudo << endl;
+		fichierSauvegarde << *m_pseudo << endl;
 		return 0;
 	}
 }
@@ -262,9 +280,9 @@ int Client::chargerParametre()
 		for (int i(0); i < sizeof(ligneLue); ++i)
 			m_ipServeur[i] = ligneLue[i];
 		//Lecture du port
-		fichierSauvegarde >> m_port;
+		fichierSauvegarde >> *m_port;
 		//Lecture du pseudo
-		fichierSauvegarde >> m_pseudo;
+		fichierSauvegarde >> *m_pseudo;
 		return 0;
 	}
 }
@@ -276,12 +294,12 @@ SOCKET Client::getSocket() const
 
 string Client::getPseudo() const
 {
-	return m_pseudo;
+	return *m_pseudo;
 }
 
 string Client::getIpServeur() const
 {
-	return m_ipServeur;
+	return *m_ipServeur;
 }
 
 int Client::getErreur() const
