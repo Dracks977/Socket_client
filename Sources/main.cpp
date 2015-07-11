@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
 	c.connexionAuServeur();
 	if (c.envoieMessage())
 	{
-		cout << "Fermeture du programme" << endl;
 		c.~Client();
 	}
 

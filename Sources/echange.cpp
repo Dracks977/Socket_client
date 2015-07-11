@@ -89,6 +89,9 @@ Client::Client(u_short port, string ip, string pseudo) : m_sock(0), m_sockMusiqu
 
 Client::~Client()
 {
+
+	cout << "Fermeture du programme" << endl;
+
 	closesocket(*m_sock);
 	closesocket(*m_sockMusique);
 	WSACleanup();
@@ -188,7 +191,7 @@ int Client::recevoirMusique()
 
 		return *m_erreur;
 	}
-	cout << endl << "Connexion au serveur: " << m_ipServeur << " sur le port " << m_portMusique << endl;
+	cout << endl << "Connexion au serveur: " << *m_ipServeur << " sur le port " << *m_portMusique << endl;
 	if (connect(*m_sockMusique, (SOCKADDR *)&m_sinMusique, sizeof(m_sinMusique)) == 0)
 	{
 		cout << "Connexion etablie " << endl;
@@ -196,12 +199,13 @@ int Client::recevoirMusique()
 	else
 	{
 		system("color 4");
-		cout << "Impossiblde de se connecter au port " << m_portMusique << " du serveur " << m_ipServeur << endl;
+		cout << "Impossiblde de se connecter au port " << *m_portMusique << " du serveur " << *m_ipServeur << endl;
 		*m_erreur = WSAGetLastError();
 		cout << "Erreur " << *m_erreur << endl;
 
 		return *m_erreur;
 	}
+
 	//Recuperation de la taille du fichier
 	long size;
 	stringstream convertion;
@@ -209,8 +213,10 @@ int Client::recevoirMusique()
 	convertion << m_bufferMusique;
 	convertion >> size;
 	cout << "Taille: " << size << "octets" << endl;
+
 	//Ouverture du fichier d'ecriture
 	ofstream fichierEcriture("temporaire.mp3", ofstream::binary | ios::app);
+
 	//Si le fichier ne s'ouvre pas
 	if (!fichierEcriture)
 	{
@@ -249,6 +255,11 @@ int Client::commande()
 	}
 	else if (*m_message == "/liste")
 		return LISTE;
+	else if (*m_message == "/connect")
+	{
+		connexionAuServeur();
+		return CONNEXION;
+	}
 	else
 		return NO_COMMANDE;
 }
