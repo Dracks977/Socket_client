@@ -242,7 +242,7 @@ int Client::recevoirMusique()
 	
 
 
-int Client::commande()
+int Client::commandeEnvoyee()
 {
 	if (*m_message == "/quit")
 		return QUITTER;
@@ -264,7 +264,7 @@ int Client::commande()
 		return NO_COMMANDE;
 }
 
-int Client::commandeServeur()
+int Client::commandeRecue()
 {
 	if (m_buffer[0] != '/')
 		return NO_COMMANDE;

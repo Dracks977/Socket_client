@@ -142,7 +142,7 @@ public:
 	*
 	*\return  Cette methode renvoie les valeur de l'enumeration \c Commandes
 	*/
-	int commande();
+	int commandeEnvoyee();
 	/*!
 	* \brief Verification d'une commande venant du serveur
 	*
@@ -150,7 +150,7 @@ public:
 	*
 	*\return  Cette methode renvoie les valeur de l'enumeration \c Commandes
 	*/
-	int commandeServeur();
+	int commandeRecue();
 	/*!
 	* \brief Envoie des messages client
 	*
