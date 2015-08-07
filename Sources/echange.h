@@ -72,9 +72,6 @@ public:
 	m_ipServeur = DEFAULT_IP //127.0.0.1
 	*\endcode
 	*
-	*\param port : port du serveur distant
-	*\param ip : Adresse IP du serveur distant
-	*\param pseudo : pPseudo du client
 	*/
 	Client();
 	/*!
@@ -92,10 +89,6 @@ public:
 	 return 0;
 	}
 	*\endcode
-	*
-	*\param port Port auquel doit se connecter le client
-	*\param ip Ip auquel doit se connecter le client
-	*\param pseudo Pseudo sous lequel est identifie le client
 	*
 	*\return 0 si la connexion s'est bien etablie,
 	*le code de l'erreur sinon
@@ -138,15 +131,15 @@ public:
 	/*!
 	* \brief Verification d'une commande
 	*
-	*Methode qui permet de verifier si un message est une commande
+	*Methode qui permet de verifier si un message est une commande, et agit en consequence.
 	*
 	*\return  Cette methode renvoie les valeur de l'enumeration \c Commandes
 	*/
 	int commandeEnvoyee();
 	/*!
-	* \brief Verification d'une commande venant du serveur
+	* \brief Verification d'une commande recue
 	*
-	*Methode qui permet de verifier si un message venant du serveur est une commande
+	*Methode qui permet de verifier si un message recue est une commande, et agit en consequence.
 	*
 	*\return  Cette methode renvoie les valeur de l'enumeration \c Commandes
 	*/
@@ -199,6 +192,21 @@ public:
 	*ou la valeur de WSAGetLastError() si l'erreur est du au reseau 
 	*/
 	int recevoirMusique();
+
+	/*!
+	* \brief Methode deconexion
+	*
+	*Methode permettant de se deconecter du serveur
+	*
+	*/
+	int deconnexion();
+	/*!
+	* \brief Methode reconexion
+	*
+	*Methode permettant de se reconnecter au serveur
+	*
+	*/
+	int reconnexion();
 	/*!
 	* \brief Destructeur de la classe client
 	*

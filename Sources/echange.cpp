@@ -145,7 +145,7 @@ int Client::envoieMessage()
 
 	if (*m_erreur == 0)//On verifie que le socket n'a pas rencontre d'erreur avant cela
 	{
-		while (commande() != QUITTER )//On verifie que l'utilisateur n'ai pas saisie '/quit'
+		while (commandeEnvoyee() != QUITTER )//On verifie que l'utilisateur n'ai pas saisie '/quit'
 		{
 			getline(cin, *m_message);
 			if (send(*m_sock, m_message[0].c_str(), sizeof(*m_message), 0) != sizeof(*m_message))
@@ -165,7 +165,7 @@ void Client::recevoirMessage()
 {
 	if (*m_erreur == 0)//On verifie que le socket n'a pas rencontre d'erreur avant cela
 	{
-		while (commande() != QUITTER && commandeServeur() != SERVEUR_OFF)
+		while (commandeEnvoyee() != QUITTER && commandeRecue() != SERVEUR_OFF)
 		{
 			*m_resultat = recv(*m_sock, m_buffer, 4096, 0);
 			if (*m_resultat > 0)
@@ -236,18 +236,20 @@ int Client::recevoirMusique()
 		cout << "Fin de la reception" << endl;
 		for (int i = 0; i < 512; ++i)
 			m_bufferMusique[i] = 0;
+		closesocket(*m_sockMusique);
 		return 0;
 	}
 }
 	
-
-
 int Client::commandeEnvoyee()
 {
 	if (*m_message == "/quit")
 		return QUITTER;
 	else if (*m_message == "/reboot")
+	{
+		reconnexion();
 		return REDEMARER;
+	}
 	else if (*m_message == "/save")
 	{
 		sauvegardeParametre();
@@ -315,6 +317,21 @@ int Client::chargerParametre()
 		fichierSauvegarde >> *m_pseudo;
 		return 0;
 	}
+}
+
+int Client::deconnexion()
+{
+	closesocket(*m_sock);
+	return 0;
+}
+
+int Client::reconnexion()
+{
+	cout << "Deconnexion du serveur" << endl;
+	deconnexion();
+	cout << "Tentative de reconnexion au serveur" << endl;
+	connexionAuServeur();
+	return 0;
 }
 
 SOCKET Client::getSocket() const
