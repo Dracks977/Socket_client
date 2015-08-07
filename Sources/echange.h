@@ -23,6 +23,9 @@
 #define DEFAULT_PORT_MUSIQUE 5568
 #define DEFAULT_PSEUDO "client"
 
+#define NOMBRE_OCTET 20
+
+
 /*! \enum Commandes
  *\brief Valeur des commandes
  */

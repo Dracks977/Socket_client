@@ -209,7 +209,7 @@ int Client::recevoirMusique()
 	//Recuperation de la taille du fichier
 	long size;
 	stringstream convertion;
-	*m_resultat = recv(*m_sockMusique, m_bufferMusique, 512, 0);
+	*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
 	convertion << m_bufferMusique;
 	convertion >> size;
 	cout << "Taille: " << size << "octets" << endl;
@@ -227,11 +227,11 @@ int Client::recevoirMusique()
 	{
 		cout << "Debut de la reception de la musique" << endl;
 		//On recoit les paquets tant que le fichier n'est pas complet
-		for (int i = 0; i < size; i += 512)
+		for (int i = 0; i < size; i += NOMBRE_OCTET)
 		{
 			i++;
-			*m_resultat = recv(*m_sockMusique, m_bufferMusique, 512, 0);
-			fichierEcriture.write(m_bufferMusique, 512);
+			*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
+			fichierEcriture.write(m_bufferMusique, NOMBRE_OCTET);
 		}
 		cout << "Fin de la reception" << endl;
 		for (int i = 0; i < 512; ++i)
