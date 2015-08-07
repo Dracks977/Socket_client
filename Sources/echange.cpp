@@ -227,11 +227,11 @@ int Client::recevoirMusique()
 	{
 		cout << "Debut de la reception de la musique" << endl;
 		//On recoit les paquets tant que le fichier n'est pas complet
-		for (int i = 0; i < size; i += NOMBRE_OCTET)
+		for (int i = 0; i < size; i += 1)
 		{
 			i++;
-			*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
-			fichierEcriture.write(m_bufferMusique, NOMBRE_OCTET);
+			*m_resultat = recv(*m_sockMusique, m_bufferMusique, 1, 0);
+			fichierEcriture.write(m_bufferMusique, 1);
 		}
 		cout << "Fin de la reception" << endl;
 		for (int i = 0; i < 512; ++i)
