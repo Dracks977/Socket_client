@@ -131,7 +131,7 @@ int Client::connexionAuServeur()
 	else
 	{
 		system("color 4");
-		cout << "Impossiblde de se connecter au port " << m_port << " du serveur " << m_ipServeur << endl;
+		cout << "Impossiblde de se connecter au port " << *m_port << " du serveur " << *m_ipServeur << endl;
 		*m_erreur = WSAGetLastError();
 		cout << "Erreur " << *m_erreur << endl;
 
