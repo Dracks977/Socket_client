@@ -236,6 +236,7 @@ int Client::recevoirMusique()
 			cout << '\r' << "Progression : " << pourcentage << "%" << "       Octets: " << i;
 			*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
 			fichierEcriture.write(m_bufferMusique, NOMBRE_OCTET);
+			Sleep(30);
 		}
 		cout << endl <<"Fin de la reception" << endl;
 		for (int i = 0; i < NOMBRE_OCTET; ++i)

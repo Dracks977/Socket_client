@@ -23,7 +23,7 @@
 #define DEFAULT_PORT_MUSIQUE 5568
 #define DEFAULT_PSEUDO "client"
 
-#define NOMBRE_OCTET 3000
+#define NOMBRE_OCTET 2048
 
 
 /*! \enum Commandes
