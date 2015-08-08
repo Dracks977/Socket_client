@@ -1,4 +1,4 @@
-#include "echange.h"
+#include "client.h"
 
 using namespace std;
 
@@ -8,7 +8,7 @@ m_buffer(0), m_bufferMusique(0), m_resultat(0), m_erreur(0)
 {
 	m_erreur = new int;
 	m_resultat = new int;
-	m_bufferMusique = new char[512];
+	m_bufferMusique = new char[NOMBRE_OCTET];
 	m_buffer = new char[NOMBRE_OCTET];
 	m_pseudoServeur = new char[30];
 	m_message = new string;
@@ -124,7 +124,7 @@ int Client::connexionAuServeur()
 	if (connect(*m_sock, (SOCKADDR *)&m_sin, sizeof(m_sin)) == 0)
 	{
 		recv(*m_sock, m_pseudoServeur, 30, 0);
-	    cout << "Connexion etablie avec " << *m_pseudoServeur << endl;
+	    cout << "Connexion etablie avec " << m_pseudoServeur << endl;
 
 		return 0;
 	}
@@ -167,10 +167,10 @@ void Client::recevoirMessage()
 	{
 		while (commandeEnvoyee() != QUITTER && commandeRecue() != SERVEUR_OFF)
 		{
-			*m_resultat = recv(*m_sock, m_buffer, 4096, 0);
+			*m_resultat = recv(*m_sock, m_buffer, NOMBRE_OCTET, 0);
 			if (*m_resultat > 0)
 			{
-				cout << endl << *m_pseudoServeur << ">" << *m_buffer << endl;
+				cout << '\r' << m_pseudoServeur << ">" << m_buffer << endl;
 				cout << *m_pseudo << ">";
 			}
 		}
@@ -236,7 +236,7 @@ int Client::recevoirMusique()
 			cout << '\r' << "Progression : " << pourcentage << "%" << "       Octets: " << i;
 			*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
 			fichierEcriture.write(m_bufferMusique, NOMBRE_OCTET);
-			Sleep(30);
+			Sleep(40);
 		}
 		cout << endl <<"Fin de la reception" << endl;
 		for (int i = 0; i < NOMBRE_OCTET; ++i)
