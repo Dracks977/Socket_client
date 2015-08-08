@@ -1,31 +1,33 @@
-This project is a test for learning use github
+This project is a test for learn github
 
 # Socket_client
 
 Client se connectant a un serveur TCP/IP, qui est un autre projet
 C'est en fait une classe client qui facilite la connexion a un serveur distant.
+C'est ici la base d'un projet qui sera a but musical. En effet, de dernier pourra, lorsqu'un client ecoute une musique, transmettre le flux audio a un autre client, afin que les deux personnes ecoutent la meme musique.
 
-##Qu'est-ce qui est deja fini
+##What is ready ?
 
-On peut se connecter a un serveur distant, envoyer un message ainsi qu'en recevoir, et recevoir une musique
+Actually, people can connect to a server, chat and receive musique from server.
+Some command can already be use, but a lot of other will be soon arrived !
+
 
 ##Comment l'utiliser
 
-Pour l'utiliser, il suffit d'ajouter echange.cpp et echange.h au projet, et d'inclure "echange.h" pour acceder aux fonctions
+Actually, for include the sources to your project, you have to include "client.h" in your app, and add "client.cpp" to your project.
 
 ##Client
 
-  Le programme permet pour le moment de se connecter a un serveur en quelques lignes
+  In main function, you can for exemple have
 
 
 ```C++
-    #include "echange.h"
+    #include "client.h"
     int main(int argc, char* argv[])
     {
         Client c;
-        c.connexion au serveur();
+        c.connexionAuServeur();
         c.envoyerMessage();
-      
         return 0;
     }
 ```    
