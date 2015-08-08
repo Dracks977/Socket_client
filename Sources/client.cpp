@@ -255,6 +255,11 @@ int Client::commandeEnvoyee()
 		reconnexion();
 		return REDEMARER;
 	}
+	else if (m_message->substr(0, 7) == "/pseudo")
+	{
+		this->changePseudo(m_message->substr(8, m_message->size() - 8));
+		return PSEUDO;
+	}
 	else if (*m_message == "/save")
 	{
 		sauvegardeParametre();
@@ -293,9 +298,8 @@ int Client::sauvegardeParametre()
 	}
 	else
 	{
-		fichierSauvegarde << m_ipServeur;
-		fichierSauvegarde << endl;
-		fichierSauvegarde << m_port<< endl;
+		fichierSauvegarde << *m_ipServeur << endl;
+		fichierSauvegarde << *m_port<< endl;
 		fichierSauvegarde << *m_pseudo << endl;
 		return 0;
 	}
@@ -322,6 +326,12 @@ int Client::chargerParametre()
 		fichierSauvegarde >> *m_pseudo;
 		return 0;
 	}
+}
+
+int Client::changePseudo(string nouveauPseudo)
+{
+	*m_pseudo = nouveauPseudo;
+	return 0;
 }
 
 int Client::deconnexion()

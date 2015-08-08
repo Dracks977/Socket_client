@@ -6,7 +6,7 @@
 * \date 3 juillet 2015
 */
 
-#include "echange.h"
+#include "client.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
