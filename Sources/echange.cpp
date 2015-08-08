@@ -9,7 +9,7 @@ m_buffer(0), m_bufferMusique(0), m_resultat(0), m_erreur(0)
 	m_erreur = new int;
 	m_resultat = new int;
 	m_bufferMusique = new char[512];
-	m_buffer = new char[512];
+	m_buffer = new char[NOMBRE_OCTET];
 	m_pseudoServeur = new char[30];
 	m_message = new string;
 	m_pseudo = new string;
@@ -50,8 +50,8 @@ Client::Client(u_short port, string ip, string pseudo) : m_sock(0), m_sockMusiqu
 {
 	m_erreur = new int;
 	m_resultat = new int;
-	m_bufferMusique = new char[512];
-	m_buffer = new char[512];
+	m_bufferMusique = new char[NOMBRE_OCTET];
+	m_buffer = new char[NOMBRE_OCTET];
 	m_pseudoServeur = new char[30];
 	m_message = new string;
 	m_pseudo = new string;
@@ -179,7 +179,7 @@ void Client::recevoirMessage()
 
 int Client::recevoirMusique()
 {
-	for (int i = 0; i < 512; ++i)
+	for (int i = 0; i < NOMBRE_OCTET; ++i)
 		m_buffer[i] = 0;
 	cout << "Fonction musique" << endl;
 	//Connexion au port diffusant la musique
@@ -207,7 +207,7 @@ int Client::recevoirMusique()
 	}
 
 	//Recuperation de la taille du fichier
-	long size;
+	double size;
 	stringstream convertion;
 	*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
 	convertion << m_bufferMusique;
@@ -216,6 +216,9 @@ int Client::recevoirMusique()
 
 	//Ouverture du fichier d'ecriture
 	ofstream fichierEcriture("temporaire.mp3", ofstream::binary | ios::app);
+
+
+	double pourcentage = 0;
 
 	//Si le fichier ne s'ouvre pas
 	if (!fichierEcriture)
@@ -227,14 +230,15 @@ int Client::recevoirMusique()
 	{
 		cout << "Debut de la reception de la musique" << endl;
 		//On recoit les paquets tant que le fichier n'est pas complet
-		for (int i = 0; i < size; i += 1)
+		for (int i = 0; i < size; i += NOMBRE_OCTET)
 		{
-			i++;
-			*m_resultat = recv(*m_sockMusique, m_bufferMusique, 1, 0);
-			fichierEcriture.write(m_bufferMusique, 1);
+			pourcentage = (100 / size)*i;
+			cout << '\r' << "Progression : " << pourcentage << "%" << "       Octets: " << i;
+			*m_resultat = recv(*m_sockMusique, m_bufferMusique, NOMBRE_OCTET, 0);
+			fichierEcriture.write(m_bufferMusique, NOMBRE_OCTET);
 		}
-		cout << "Fin de la reception" << endl;
-		for (int i = 0; i < 512; ++i)
+		cout << endl <<"Fin de la reception" << endl;
+		for (int i = 0; i < NOMBRE_OCTET; ++i)
 			m_bufferMusique[i] = 0;
 		closesocket(*m_sockMusique);
 		return 0;
