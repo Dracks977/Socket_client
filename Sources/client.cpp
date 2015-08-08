@@ -150,7 +150,7 @@ int Client::envoieMessage()
 			getline(cin, *m_message);
 			if (send(*m_sock, m_message[0].c_str(), sizeof(*m_message), 0) != sizeof(*m_message))
 			{
-				cout << "Impossible d'envoyer le message a " << m_ipServeur << " ! Erreur: " << WSAGetLastError() << endl;
+				cout << "Impossible d'envoyer le message a " << *m_ipServeur << " ! Erreur: " << WSAGetLastError() << endl;
 			}
 			cout << *m_pseudo << ">";
 		}
@@ -215,7 +215,7 @@ int Client::recevoirMusique()
 	cout << "Taille: " << size << "octets" << endl;
 
 	//Ouverture du fichier d'ecriture
-	ofstream fichierEcriture("temporaire.mp3", ofstream::binary | ios::app);
+	ofstream fichierEcriture("temporaire.smm", ofstream::binary | ios::app);
 
 
 	double pourcentage = 0;
@@ -285,7 +285,7 @@ int Client::commandeRecue()
 
 int Client::sauvegardeParametre()
 {
-	ofstream fichierSauvegarde("data.tsc");
+	ofstream fichierSauvegarde("param.tsc");
 	if (!fichierSauvegarde)
 	{
 		cout << "Impposible d'acceder au fichier de sauvegarde" << endl;

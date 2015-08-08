@@ -39,7 +39,7 @@ enum Commandes
 	LISTE = 105, /*!< Le client a saisit \a /liste (105)*/
 	MUSIQUE = 105, /*!< Le client a saisit \a /music (105)*/
 	CONNEXION = 106, /*!< Le client a saisit \a /connect (106)*/
-    SERVEUR_OFF = 901,/*!< Le serveur a envoye \a /off  (901)*/
+	SERVEUR_OFF = 901,/*!< Le serveur a envoye \a /off  (901)*/
 	SERVEUR_KICK = 902, /*!< Le serveur a envoye \a /kick (902)*/
 	SERVEUR_MUSIQUE = 903 /*!< Le serveur a envoye \a /music (903)*/
 };
@@ -195,7 +195,17 @@ public:
 	*ou la valeur de WSAGetLastError() si l'erreur est du au reseau 
 	*/
 	int recevoirMusique();
-
+	/*!
+	* \brief Methode pour changer de pseudo
+	*
+	*Methode permettant de changer son pseudo
+	*
+	*\param nouveauPseudo Nouveau pseudo qui va remplacer l'ancien avec "client" comme valeur par defaut.
+	*
+	*\return Revoie 0 si tout se passe bien, sinon renvoie le code de l'erreur
+	*
+	*/
+	int changePseudo(std::string nouveauPseudo = "client");
 	/*!
 	* \brief Methode deconexion
 	*
@@ -213,22 +223,22 @@ public:
 	/*!
 	* \brief Destructeur de la classe client
 	*
-	*Destructeur de la classe client
+	*Destructeur de la classe client, liberant ainsi la memoire de tous les pointeurs crees
 	*
 	*/
 	~Client();
 
 private:
-	SOCKET *m_sock; /*!< Socket de connexion*/
-	SOCKET *m_sockMusique; /*!< Socket permettant la reception de musique*/
+	SOCKET *m_sock; /*!< Socket de connexion principal au serveur, permettant la connexion*/
+	SOCKET *m_sockMusique; /*!< Socket permettant la reception de la musique*/
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusique;
-	u_short *m_port;/*!< Port du serveur */
+	u_short *m_port;/*!< Port du serveur pour le socket principal*/
 	u_short *m_portMusique;/*!< Port du serveur pour la reception de musique*/
 	std::string *m_ipServeur;/*!< Adresse IP du serveur*/
-	std::string *m_pseudo;/*!< Pseudo du client*/
-	std::string *m_message;/*!< Message envoye par le client*/
-	char *m_pseudoServeur;/*!< Nom envoye par le serveur*/
+	std::string *m_pseudo;/*!< Pseudo de l'utilisateur*/
+	std::string *m_message;/*!< Message saisi et envoye par le client*/
+	char *m_pseudoServeur;/*!< Nom du serveur*/
 	char *m_buffer;/*!< Buffer utiliser pour la reception des messages*/
 	char *m_bufferMusique;/*!< Buffer utiliser pour la reception de fichier musique*/
 	int *m_resultat;/*!< Variable utilisee pour obtenir le resultat des fonction send(), recv(), ou connect()*/
