@@ -119,7 +119,7 @@ int Server::listenClient()
 	string message;
 	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
 	int sinsize = sizeof(csin);
-	//csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
+	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
 	send(csock, m_pseudo->c_str(), 30, 0);
 	cout << "Connexion entrante" << endl;
 
@@ -143,4 +143,5 @@ int Server::acceptClient()
 	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
 	}
 	*/
+	return 0;
 }
