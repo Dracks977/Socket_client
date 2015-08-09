@@ -1,7 +1,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #include "serveur.h"
-#include <fstream>
+
 
 #define NOMBRE_OCTET 2048
 using namespace std;
@@ -10,47 +10,73 @@ using namespace std;
 
 
 
-Server::Server()
+Server::Server() : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
 {
-	m_sockServer = new SOCKET(AF_INET, SOCK_STREAM, 0);
-
+	m_sockServer = new SOCKET;
+	m_sockMusic = new SOCKET;
+	m_pseudo = new string;
+	m_port = new u_short;
+	m_portMusic = new u_short;
+	m_buffer = new char[NOMBRE_OCTET];
+	m_bufferMusic = new char[NOMBRE_OCTET];
+	m_erreur = new int;
 }
 
-int Server::start(u_short port, SOCKET &sock, SOCKADDR_IN &sin)
+Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
+{
+	m_sockServer = new SOCKET;
+	m_sockMusic = new SOCKET;
+	m_pseudo = new string;
+	m_port = new u_short;
+	m_portMusic = new u_short;
+	m_buffer = new char[NOMBRE_OCTET];
+	m_bufferMusic = new char[NOMBRE_OCTET];
+	m_erreur = new int;
+
+	*m_pseudo = pseudo;
+	*m_port = port;
+	*m_portMusic = portMusic;
+}
+
+int Server::start()
 {
 	WSADATA WSAData;
-	WSAStartup(MAKEWORD(2, 0), &WSAData);
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	sin.sin_addr.s_addr = INADDR_ANY;
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(port);
-	bind(sock, (SOCKADDR *)&sin, sizeof(sin));
-	listen(sock, 0);
-	cout << "Ecoute du port: " << port << endl;
+	if (WSAStartup(MAKEWORD(2, 0), &WSAData) != 0)
+	{
+		cout << "Erreur de la fonction WSAStarup dans le constructeur de la classe client" << endl;
+		*m_erreur = WSAGetLastError();
+		cout << "Erreur " << *m_erreur << endl;
+		return *m_erreur;
+	}
+	*m_sockServer = socket(AF_INET, SOCK_STREAM, 0);
+	m_sin.sin_addr.s_addr = INADDR_ANY;
+	m_sin.sin_family = AF_INET;
+	m_sin.sin_port = htons(*m_port);
+	bind(*m_sockServer, (SOCKADDR *)&m_sin, sizeof(m_sin));
+	listen(*m_sockServer, 0);
+	cout << "Ecoute du port: " << *m_port << endl;
 	return 0;
 }
 
 
 
-void musique()
+int Server::sendMusic()
 {
 	cout << "Fonction musique" << endl;
-	SOCKET sockMusique;
 	SOCKET csockMusique;
-	SOCKADDR_IN sinMusique;
 	SOCKADDR_IN csinMusique;
 
-	sockMusique = socket(AF_INET, SOCK_STREAM, 0);
-	sinMusique.sin_addr.s_addr = INADDR_ANY;
-	sinMusique.sin_family = AF_INET;
-	sinMusique.sin_port = htons(5568);
-	bind(sockMusique, (SOCKADDR *)&sinMusique, sizeof(sinMusique));
-	listen(sockMusique, 0);
+	*m_sockMusic = socket(AF_INET, SOCK_STREAM, 0);
+	m_sinMusic.sin_addr.s_addr = INADDR_ANY;
+	m_sinMusic.sin_family = AF_INET;
+	m_sinMusic.sin_port = htons(5568);
+	bind(*m_sockMusic, (SOCKADDR *)&m_sinMusic, sizeof(m_sinMusic));
+	listen(*m_sockMusic, 0);
 
 	cout << "Parametrage termine" << endl;
 
 	int sinMsize = sizeof(csinMusique);
-	csockMusique = accept(sockMusique, (SOCKADDR *)&csinMusique, &sinMsize);
+	csockMusique = accept(*m_sockMusic, (SOCKADDR *)&csinMusique, &sinMsize);
 
 	cout << "Connexion reussie" << endl;
 
@@ -83,20 +109,22 @@ void musique()
 		Sleep(40);
 	}
 	cout << endl << "Fin de la reception" << endl;
-	closesocket(sockMusique);
+	closesocket(*m_sockMusic);
 	closesocket(csockMusique);
+
+	return 0;
 }
 
-int ecoute(SOCKET sock,SOCKADDR_IN sin, string pseudo)
+int Server::listenClient()
 {
 	SOCKET csock;
 	SOCKADDR_IN csin;
 	char buffer[255];
 	string message;
-	cout << "Le serveur nomme " << pseudo << " ecoute maintenant les connexions entrantes" << endl;
+	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
 	int sinsize = sizeof(csin);
-	csock = accept(sock, (SOCKADDR *)&csin, &sinsize);
-    send(csock, pseudo.c_str(), 30, 0);
+	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
+    send(csock, m_pseudo->c_str(), 30, 0);
 	cout << "Connexion entrante" << endl;
 
 	while (1)
@@ -104,12 +132,9 @@ int ecoute(SOCKET sock,SOCKADDR_IN sin, string pseudo)
 		getline(cin, message);
 
 		send(csock, message.c_str(), sizeof(message), 0);
-		cout << pseudo << ">";
+		cout << *m_pseudo << ">";
 		if (message == "/music")
-			musique();
+			sendMusic();
 	}
-	cout << "OK !" << endl;
-	system("PAUSE");
-	closesocket(sock);
 	return 0;
 }

@@ -37,10 +37,8 @@ int main(int argc, char* argv[])
 
 	Client c(port, ip, pseudo);
 	c.connexionAuServeur();
-	if (c.envoieMessage())
-	{
-		c.~Client();
-	}
+	c.threadReceiveMessage();
+	c.envoieMessage();
 
 	return 0;
 }

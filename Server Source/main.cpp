@@ -2,20 +2,21 @@
 #include <winsock2.h>
 #include <iostream>
 #include "connexion.h"
-#include "ecoute.h"
+#include "serveur.h"
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
 int main()
 {
-	SOCKET sock;
-	SOCKADDR_IN sin;
+	
 	u_short port;
-	char pseudo[30];
+	string pseudo;
 	cout << "Port: ";
 	cin >> port;
 	cout << "Pseudo: ";
 	cin >> pseudo;
-	connexion(port, sock, sin);
-	ecoute(sock, sin, pseudo);
+
+	Server server(pseudo, port, 5568);
+	server.start();
+	server.listenClient();
 	return 0;
 }

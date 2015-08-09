@@ -17,14 +17,14 @@ m_buffer(0), m_bufferMusique(0), m_resultat(0), m_erreur(0)
 	m_portMusique = new u_short;
 	m_port = new u_short;
 	m_sock = new SOCKET;
-
+	m_sockMusique = new SOCKET;
 	*m_erreur = 0;
 	*m_resultat = 0;
 	*m_pseudo = DEFAULT_PSEUDO;
 	*m_ipServeur = DEFAULT_IP;
 	*m_portMusique = DEFAULT_PORT_MUSIQUE;
 	*m_port = DEFAULT_PORT;
-	m_sockMusique = new SOCKET;
+
 
 	WSADATA WSAData;
 	if (WSAStartup(MAKEWORD(2, 0), &WSAData) != 0)
@@ -141,7 +141,6 @@ int Client::connexionAuServeur()
 
 int Client::envoieMessage()
 {
-	thread (&Client::recevoirMessage, this).detach();
 
 	if (*m_erreur == 0)//On verifie que le socket n'a pas rencontre d'erreur avant cela
 	{
@@ -346,6 +345,17 @@ int Client::reconnexion()
 	deconnexion();
 	cout << "Tentative de reconnexion au serveur" << endl;
 	connexionAuServeur();
+	return 0;
+}
+
+int Client::threadReceiveMessage()
+{
+	thread(&Client::recevoirMessage, this).detach();
+	return 0;
+}
+int Client::threadSendMessage()
+{
+	thread(&Client::envoieMessage, this).detach();
 	return 0;
 }
 

@@ -207,6 +207,20 @@ public:
 	*/
 	int changePseudo(std::string nouveauPseudo = "client");
 	/*!
+	* \brief Methode permettant l'envoi message par thread
+	*
+	*Methode permettant de recevoir des messages venant du serveur grace a un thread
+	*
+	*/
+	int threadSendMessage();
+	/*!
+	* \brief Methode recevoir message par thread
+	*
+	*Methode permettant de recevoir des messages venant du serveur grace a un thread
+	*
+	*/
+	int threadReceiveMessage();
+	/*!
 	* \brief Methode deconexion
 	*
 	*Methode permettant de se deconecter du serveur
