@@ -10,7 +10,6 @@ Server::Server() : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_po
 {
 	m_sockServer = new SOCKET;
 	m_sockMusic = new SOCKET;
-	m_cSock = new SOCKET;
 	m_pseudo = new string;
 	m_message = new string;
 	m_port = new u_short;
@@ -24,7 +23,6 @@ Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServ
 {
 	m_sockServer = new SOCKET;
 	m_sockMusic = new SOCKET;
-	m_cSock = new SOCKET;
 	m_pseudo = new string;
 	m_message = new string;
 	m_port = new u_short;
@@ -53,12 +51,8 @@ int Server::start()
 	m_sin.sin_family = AF_INET;
 	m_sin.sin_port = htons(*m_port);
 	bind(*m_sockServer, (SOCKADDR *)&m_sin, sizeof(m_sin));
-
-
-	*m_erreur = WSAGetLastError();
-	cout << "Erreur " << *m_erreur << endl;
-
-
+	listen(*m_sockServer, 0);
+	cout << "Ecoute du port: " << *m_port << endl;
 	return 0;
 }
 
@@ -102,10 +96,10 @@ int Server::sendMusic()
 
 	while (pbuf->sgetc() != EOF)
 	{
-		tourBoucle ++;
+		tourBoucle++;
 		for (int i = 0; i < NOMBRE_OCTET; i++)
 			bufferM[i] = pbuf->sbumpc();
-		cout << '\r' << "Progression : " << (100/taille)*(tourBoucle*NOMBRE_OCTET)
+		cout << '\r' << "Progression : " << (100 / taille)*(tourBoucle*NOMBRE_OCTET)
 			<< "     octets: " << tourBoucle*NOMBRE_OCTET;
 		send(csockMusique, bufferM, NOMBRE_OCTET, 0);
 		Sleep(40);
@@ -119,36 +113,21 @@ int Server::sendMusic()
 
 int Server::listenClient()
 {
-	//thread(&Server::acceptClient, this).detach();
-	string message;
-	SOCKET cSock;
-	SOCKET sock;
+	SOCKET csock;
 	SOCKADDR_IN csin;
-	int sinsize = sizeof(csin);
-
-
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	m_sin.sin_addr.s_addr = INADDR_ANY;
-	m_sin.sin_family = AF_INET;
-	m_sin.sin_port = htons(*m_port);
-	bind(sock, (SOCKADDR *)&m_sin, sizeof(m_sin));
-	listen(sock, 0);
-	cSock = accept(sock, (SOCKADDR *)&csin, &sinsize);
-
-
-
-	
-	
+	char buffer[255];
+	string message;
 	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
-	cSock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
-    send(*m_cSock, m_pseudo->c_str(), 30, 0);
+	int sinsize = sizeof(csin);
+	//csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
+	send(csock, m_pseudo->c_str(), 30, 0);
 	cout << "Connexion entrante" << endl;
 
 	while (1)
 	{
 		getline(cin, message);
 
-		send(*m_sockServer, message.c_str(), NOMBRE_OCTET, 0);
+		send(csock, message.c_str(), sizeof(message), 0);
 		cout << *m_pseudo << ">";
 		if (message == "/music")
 			sendMusic();
@@ -158,21 +137,10 @@ int Server::listenClient()
 
 int Server::acceptClient()
 {
-	listen(*m_sockServer, 0);
-	cout << "Ecoute du port: " << *m_port << endl;
-	
-	int val = 0;
+	/*
 	while (*m_message != "/off")
 	{
-		int sinsize = sizeof(m_cSin);
-		*m_cSock = accept(*m_sockServer, (SOCKADDR *)&m_cSin, &sinsize);
-		if (*m_cSock != INVALID_SOCKET)
-		{
-			cout << "Connexion d'un nouveau client" << endl;
-			//recv(*m_sockServer, m_buffer, NOMBRE_OCTET, 0);
-			listeClient["test"] = *m_cSock;
-			*m_cSock = INVALID_SOCKET;
-		}
+	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
 	}
-	return 0;
+	*/
 }

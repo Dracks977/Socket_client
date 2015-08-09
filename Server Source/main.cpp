@@ -17,6 +17,6 @@ int main()
 
 	Server server(pseudo, port, 5568);
 	server.start();
-	server.acceptClient();
+	server.listenClient();
 	return 0;
 }
