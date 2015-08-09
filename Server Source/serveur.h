@@ -17,6 +17,7 @@ public:
 	Server(std::string pseudo, u_short port, u_short portMusic);
 	int start();
 	int listenClient();
+	int acceptClient();
 	int sendMusic();
 
 private:
@@ -25,14 +26,12 @@ private:
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusic;
 	std::string *m_pseudo;
+	std::string *m_message;/*!< Message saisi et envoye par le client*/
 	u_short *m_port;
 	u_short *m_portMusic;
 	char *m_buffer;
 	char *m_bufferMusic;
 	int *m_erreur;
 };
-
-
-int ecoute(SOCKET sock,SOCKADDR_IN sin, std::string pseudo);
 
 #endif

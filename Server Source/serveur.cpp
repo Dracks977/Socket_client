@@ -1,20 +1,17 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
-#include "serveur.h"
 
+#include "serveur.h"
 
 #define NOMBRE_OCTET 2048
 using namespace std;
-
-
-
-
 
 Server::Server() : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
 {
 	m_sockServer = new SOCKET;
 	m_sockMusic = new SOCKET;
 	m_pseudo = new string;
+	m_message = new string;
 	m_port = new u_short;
 	m_portMusic = new u_short;
 	m_buffer = new char[NOMBRE_OCTET];
@@ -27,6 +24,7 @@ Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServ
 	m_sockServer = new SOCKET;
 	m_sockMusic = new SOCKET;
 	m_pseudo = new string;
+	m_message = new string;
 	m_port = new u_short;
 	m_portMusic = new u_short;
 	m_buffer = new char[NOMBRE_OCTET];
@@ -57,8 +55,6 @@ int Server::start()
 	cout << "Ecoute du port: " << *m_port << endl;
 	return 0;
 }
-
-
 
 int Server::sendMusic()
 {
@@ -123,7 +119,7 @@ int Server::listenClient()
 	string message;
 	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
 	int sinsize = sizeof(csin);
-	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
+	//csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
     send(csock, m_pseudo->c_str(), 30, 0);
 	cout << "Connexion entrante" << endl;
 
@@ -137,4 +133,13 @@ int Server::listenClient()
 			sendMusic();
 	}
 	return 0;
+}
+
+int Server::acceptClient()
+{
+	while (*m_message != "/off")
+	{
+		csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
+	}
+
 }
