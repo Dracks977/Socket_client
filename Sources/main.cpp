@@ -40,5 +40,6 @@ int main(int argc, char* argv[])
 	c.threadReceiveMessage();
 	c.envoieMessage();
 
+	system("Pause");
 	return 0;
 }

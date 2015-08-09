@@ -6,6 +6,8 @@
 #include <Windows.h>
 #include <string>
 #include <fstream>
+#include <map>
+#include <thread>
 
 #define NOMBRE_OCTET 2048
 
@@ -23,8 +25,10 @@ public:
 private:
 	SOCKET *m_sockServer;
 	SOCKET *m_sockMusic;
+	SOCKET *m_cSock;
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusic;
+	SOCKADDR_IN m_cSin;
 	std::string *m_pseudo;
 	std::string *m_message;/*!< Message saisi et envoye par le client*/
 	u_short *m_port;
@@ -32,6 +36,8 @@ private:
 	char *m_buffer;
 	char *m_bufferMusic;
 	int *m_erreur;
+
+	std::map<std::string, SOCKET> listeClient;
 };
 
 #endif

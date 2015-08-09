@@ -8,7 +8,6 @@ using namespace std;
 
 int main()
 {
-	
 	u_short port;
 	string pseudo;
 	cout << "Port: ";
@@ -18,6 +17,6 @@ int main()
 
 	Server server(pseudo, port, 5568);
 	server.start();
-	server.listenClient();
+	server.acceptClient();
 	return 0;
 }
