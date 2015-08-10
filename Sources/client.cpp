@@ -123,6 +123,7 @@ int Client::connexionAuServeur()
     cout << endl << "Connexion au serveur " << *m_ipServeur << " sur le port " << *m_port << endl;
 	if (connect(*m_sock, (SOCKADDR *)&m_sin, sizeof(m_sin)) == 0)
 	{
+		send(*m_sock, m_pseudo->c_str(), 30, 0);
 		recv(*m_sock, m_pseudoServeur, 30, 0);
 	    cout << "Connexion etablie avec " << m_pseudoServeur << endl;
 

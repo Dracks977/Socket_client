@@ -6,10 +6,11 @@
 #define NOMBRE_OCTET 2048
 using namespace std;
 
-Server::Server() : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
+Server::Server() : m_sockServer(0), m_sockMusic(0), m_cSock(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
 {
 	m_sockServer = new SOCKET;
 	m_sockMusic = new SOCKET;
+	m_cSock = new SOCKET;
 	m_pseudo = new string;
 	m_message = new string;
 	m_port = new u_short;
@@ -19,10 +20,11 @@ Server::Server() : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_po
 	m_erreur = new int;
 }
 
-Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServer(0), m_sockMusic(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
+Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServer(0), m_sockMusic(0), m_cSock(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
 {
 	m_sockServer = new SOCKET;
 	m_sockMusic = new SOCKET;
+	m_cSock = new SOCKET;
 	m_pseudo = new string;
 	m_message = new string;
 	m_port = new u_short;
@@ -51,7 +53,7 @@ int Server::start()
 	m_sin.sin_family = AF_INET;
 	m_sin.sin_port = htons(*m_port);
 	bind(*m_sockServer, (SOCKADDR *)&m_sin, sizeof(m_sin));
-	listen(*m_sockServer, 0);
+	listen(*m_sockServer, 5);
 	cout << "Ecoute du port: " << *m_port << endl;
 	return 0;
 }
@@ -111,37 +113,40 @@ int Server::sendMusic()
 	return 0;
 }
 
-int Server::listenClient()
+void Server::listenClient()
 {
-	SOCKET csock;
-	SOCKADDR_IN csin;
-	char buffer[255];
 	string message;
-	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
-	int sinsize = sizeof(csin);
-	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
-	send(csock, m_pseudo->c_str(), 30, 0);
-	cout << "Connexion entrante" << endl;
 
 	while (1)
 	{
 		getline(cin, message);
 
-		send(csock, message.c_str(), sizeof(message), 0);
+		send(*m_cSock, message.c_str(), sizeof(message), 0);
 		cout << *m_pseudo << ">";
 		if (message == "/music")
 			sendMusic();
 	}
-	return 0;
+
 }
 
 int Server::acceptClient()
 {
-	/*
+    
+	
+
+	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
+
+	int sinsize = sizeof(m_cSin);
 	while (*m_message != "/off")
 	{
-	csock = accept(*m_sockServer, (SOCKADDR *)&csin, &sinsize);
+		*m_cSock = accept(*m_sockServer, (SOCKADDR *)&m_cSin, &sinsize);
+		if (*m_cSock != INVALID_SOCKET)
+		{
+			cout << "Nouveau client" << endl;
+			recv(*m_sockServer, m_buffer, NOMBRE_OCTET, 0);
+			send(*m_cSock, m_pseudo->c_str(), 30, 0);
+			listeClient.push_back(*m_cSock);
+		}
 	}
-	*/
 	return 0;
 }

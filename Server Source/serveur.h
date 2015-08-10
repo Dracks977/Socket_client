@@ -1,13 +1,14 @@
-#ifndef ECOUTE
-#define ECOUTE
+#ifndef SERVER_H
+#define SERVER_H
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
+#include <WinSock2.h>
 #include <iostream>
-#include <winsock2.h>
-#include <Windows.h>
 #include <string>
+#include <pthread.h>
 #include <fstream>
-#include <map>
-#include <thread>
+#include <list>
+
 
 #define NOMBRE_OCTET 2048
 
@@ -18,7 +19,7 @@ public:
 	Server();
 	Server(std::string pseudo, u_short port, u_short portMusic);
 	int start();
-	int listenClient();
+	void listenClient();
 	int acceptClient();
 	int sendMusic();
 
@@ -37,7 +38,8 @@ private:
 	char *m_bufferMusic;
 	int *m_erreur;
 
-	std::map<std::string, SOCKET> listeClient;
+
+	std::list<SOCKET> listeClient;
 };
 
 #endif
