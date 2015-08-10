@@ -113,21 +113,30 @@ int Server::sendMusic()
 	return 0;
 }
 
-void Server::listenClient()
+int Server::listenClient()
 {
-	string message;
-
-	while (1)
+	while (*m_message != "off")
 	{
-		getline(cin, message);
+		recv(*m_sockServer, m_buffer, NOMBRE_OCTET, 0);
+		cout << m_buffer << endl;
+	}
+	return 0;
+}
 
-		send(*m_cSock, message.c_str(), sizeof(message), 0);
+int Server::sendMessage()
+{
+	while (*m_message != "/off")
+	{
+		getline(cin, *m_message);
+		for (list<SOCKET>::iterator it = listeClient.begin(); it != listeClient.end(); it++)
+			send(*it, m_message->c_str(), NOMBRE_OCTET, 0);
 		cout << *m_pseudo << ">";
-		if (message == "/music")
+		if (*m_message == "/music")
 			sendMusic();
 	}
-
+	return 0;
 }
+
 
 int Server::acceptClient()
 {
@@ -149,4 +158,17 @@ int Server::acceptClient()
 		}
 	}
 	return 0;
+}
+
+void Server::setPort(u_short port)
+{
+	*m_port = port;
+}
+void Server::setMusicPort(u_short port)
+{
+	*m_portMusic = port;
+}
+void Server::setPseudo(string pseudo)
+{
+	*m_pseudo = pseudo;
 }
