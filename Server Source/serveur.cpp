@@ -18,6 +18,7 @@ Server::Server() : m_sockServer(0), m_sockMusic(0), m_cSock(0), m_pseudo(0), m_p
 	m_buffer = new char[NOMBRE_OCTET];
 	m_bufferMusic = new char[NOMBRE_OCTET];
 	m_erreur = new int;
+	m_resultat = new int;
 }
 
 Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServer(0), m_sockMusic(0), m_cSock(0), m_pseudo(0), m_port(0), m_portMusic(0), m_buffer(0), m_bufferMusic(0)
@@ -32,6 +33,7 @@ Server::Server(std::string pseudo, u_short port, u_short portMusic) : m_sockServ
 	m_buffer = new char[NOMBRE_OCTET];
 	m_bufferMusic = new char[NOMBRE_OCTET];
 	m_erreur = new int;
+	m_resultat = new int;
 
 	*m_pseudo = pseudo;
 	*m_port = port;
@@ -113,13 +115,45 @@ int Server::sendMusic()
 	return 0;
 }
 
-int Server::listenClient()
+int Server::listenClient() 
 {
-	while (*m_message != "off")
-	{
-		recv(*m_sockServer, m_buffer, NOMBRE_OCTET, 0);
-		cout << m_buffer << endl;
-	}
+	fd_set st;
+	timeval time;
+
+	time.tv_sec = 1;
+	time.tv_usec = 0;
+
+		while (*m_message != "/off")
+		{
+			
+			for (list<SOCKET>::iterator it = listeClient.begin(); it != listeClient.end(); it++)
+			{
+				FD_ZERO(&st);
+				FD_SET(*it, &st);
+				*m_resultat = select(*it, &st, NULL, NULL, &time);
+				if (*m_resultat == -1)
+				{
+					*m_erreur = WSAGetLastError();
+					cout << "Erreur lors du select" << endl;
+				}
+				else if (FD_ISSET(*it, &st))
+				{
+					if (recv(*it, m_buffer, NOMBRE_OCTET, 0) > 0)
+					{
+						cout << *it << ">" << m_buffer << endl;
+						cout << *m_pseudo << ">";
+					}
+					else
+					{
+						*m_erreur = WSAGetLastError();
+						cout << "Erreur lors de la reception du message provenant de " << *it << endl;
+					}
+				}
+
+			}
+
+		}
+	
 	return 0;
 }
 
@@ -129,7 +163,13 @@ int Server::sendMessage()
 	{
 		getline(cin, *m_message);
 		for (list<SOCKET>::iterator it = listeClient.begin(); it != listeClient.end(); it++)
-			send(*it, m_message->c_str(), NOMBRE_OCTET, 0);
+		{
+			if (send(*it, m_message->c_str(), NOMBRE_OCTET, 0) != NOMBRE_OCTET)
+			{
+				cout << "Impossible d'envoyer le message a " << *it << " ! Erreur: " << WSAGetLastError() << endl;
+			}
+		}
+			
 		cout << *m_pseudo << ">";
 		if (*m_message == "/music")
 			sendMusic();
@@ -140,10 +180,9 @@ int Server::sendMessage()
 
 int Server::acceptClient()
 {
-    
-	
-
 	cout << "Le serveur nomme " << *m_pseudo << " ecoute maintenant les connexions entrantes" << endl;
+
+	u_long arg=0;
 
 	int sinsize = sizeof(m_cSin);
 	while (*m_message != "/off")
@@ -152,8 +191,9 @@ int Server::acceptClient()
 		if (*m_cSock != INVALID_SOCKET)
 		{
 			cout << "Nouveau client" << endl;
-			recv(*m_sockServer, m_buffer, NOMBRE_OCTET, 0);
+			recv(*m_sockServer, m_buffer, 30, 0);
 			send(*m_cSock, m_pseudo->c_str(), 30, 0);
+			string pseudoClient = m_buffer;
 			listeClient.push_back(*m_cSock);
 		}
 	}

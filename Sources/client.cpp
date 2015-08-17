@@ -123,7 +123,7 @@ int Client::connexionAuServeur()
     cout << endl << "Connexion au serveur " << *m_ipServeur << " sur le port " << *m_port << endl;
 	if (connect(*m_sock, (SOCKADDR *)&m_sin, sizeof(m_sin)) == 0)
 	{
-		send(*m_sock, m_pseudo->c_str(), 30, 0);
+		send(*m_sock, m_pseudo->c_str(), 15, 0);
 		recv(*m_sock, m_pseudoServeur, 30, 0);
 	    cout << "Connexion etablie avec " << m_pseudoServeur << endl;
 
@@ -148,7 +148,7 @@ int Client::envoieMessage()
 		while (commandeEnvoyee() != QUITTER )//On verifie que l'utilisateur n'ai pas saisie '/quit'
 		{
 			getline(cin, *m_message);
-			if (send(*m_sock, m_message[0].c_str(), sizeof(*m_message), 0) != sizeof(*m_message))
+			if (send(*m_sock, m_message->c_str(), NOMBRE_OCTET, 0) != NOMBRE_OCTET)
 			{
 				cout << "Impossible d'envoyer le message a " << *m_ipServeur << " ! Erreur: " << WSAGetLastError() << endl;
 			}

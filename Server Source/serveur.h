@@ -8,14 +8,17 @@
 #include <pthread.h>
 #include <fstream>
 #include <list>
+#include <utility>
 #include <stdlib.h>
 
 
 #define NOMBRE_OCTET 2048
 
 
-
-
+/*! \class Server
+*
+*La classe gerant les connexions et les echanges de donnees avec les clients
+*/
 class Server
 {
 public:
@@ -100,6 +103,7 @@ private:
 	char *m_buffer;/*!< Buffer contenant les messages recus*/
 	char *m_bufferMusic;/*!< Buffer contenant les donnees du ficier musique a envoyer*/
 	int *m_erreur;/*!< Variable contenant la derniere erreur rencontree*/
+	int *m_resultat;
 
 
 	std::list<SOCKET> listeClient;
