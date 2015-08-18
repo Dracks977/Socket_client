@@ -14,11 +14,17 @@
 
 #define NOMBRE_OCTET 2048
 
-struct connectedClient;
+typedef struct connectedClient{
+	int ID;
+	char* pseudo;
+	SOCKET socket;
+
+}connectedClient;
 struct data;
 
 void* threadAcceptClient(void* p_data);
 void* threadSendMessage(void* p_data);
+void* threadReceiveMessage(void* p_data);
 
 /*! \class Server
 *
@@ -37,12 +43,13 @@ public:
 	Server(std::string pseudo, u_short port, u_short portMusic);
 	int start();
 	/*!
-	* \brief Methode permettant d'ecouter les clients
+	* \brief Methode permettant de recevoir les messages.
 	*
-	*Methode sous forme de boucle qui verifie qu'un client n'a pas envoyer de message
+	*Methode sous forme de boucle qui verifie qu'un client n'a pas envoye de message, et permet donc la reception de celui-ci en cas d'envoie de
+	*la part d'un client
 	*
 	*/
-	int listenClient();
+	void receiveMessage();
 	/*!
 	* \brief Methode permettant d'accepter des client
 	*
@@ -65,7 +72,7 @@ public:
 	*
 	*
 	*/
-	int sendMessage();
+	void sendMessage();
 	/*!
 	* \brief Methode pour changer le port
 	*
@@ -93,25 +100,28 @@ public:
 	*
 	*/
 	void setPseudo(std::string pseudo);
+	int getError();
+	u_short getPort();
+	u_short getPortMusic();
+	char* getBufer();
+
 
 private:
 	SOCKET *m_sockServer;/*!< Socket principale du serveur*/
 	SOCKET *m_sockMusic;/*!< Socket permettant d'envoyer de la musique*/
-	SOCKET *m_cSock;/*!< Socket permettant d'accepter les connexions entrantes*/
 	SOCKADDR_IN m_sin;
 	SOCKADDR_IN m_sinMusic;
 	SOCKADDR_IN m_cSin;
+	connectedClient m_lastClient;/*!< Donnees du dernier client s'etant connecte*/
 	std::string *m_pseudo;/*!< Pseudo de l'utilisateur du serveur*/
 	std::string *m_message;/*!< Message saisi et envoye par le serveur*/
 	u_short *m_port;/*!< Port  principal qu'ecoute le serveur*/
 	u_short *m_portMusic;/*!< Port permettant d'envoyer de la musique*/
 	char *m_buffer;/*!< Buffer contenant les messages recus*/
 	char *m_bufferMusic;/*!< Buffer contenant les donnees du ficier musique a envoyer*/
-	int *m_erreur;/*!< Variable contenant la derniere erreur rencontree*/
-	int *m_resultat;
-
-
-	std::list<connectedClient> listeClient;
+	int *m_error;/*!< Variable contenant la derniere erreur rencontree*/
+	int *m_resultat;/*!< Variable contenant le resultat de la derniere action*/
+	std::list<connectedClient> listeClient;/*!< List des client conectes*/
 };
 
 typedef struct data{
@@ -120,10 +130,7 @@ typedef struct data{
 
 }data;
 
-typedef struct connectedClient{
-	char* pseudo;
-	SOCKET socket;
-}connectedClient;
+
 
 
 #endif

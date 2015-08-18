@@ -290,7 +290,7 @@ int Client::commandeRecue()
 
 int Client::sauvegardeParametre()
 {
-	ofstream fichierSauvegarde("param.tsc");
+	ofstream fichierSauvegarde("dataClient.tsc");
 	if (!fichierSauvegarde)
 	{
 		cout << "Impposible d'acceder au fichier de sauvegarde" << endl;
@@ -307,7 +307,7 @@ int Client::sauvegardeParametre()
 
 int Client::chargerParametre()
 {
-	ifstream fichierSauvegarde("data.tsc");
+	ifstream fichierSauvegarde("dataClient.tsc");
 	if (!fichierSauvegarde)
 	{
 		cout << "Impposible d'acceder au fichier de sauvegarde" << endl;
@@ -349,15 +349,17 @@ int Client::reconnexion()
 	return 0;
 }
 
-int Client::threadReceiveMessage()
+void* threadSendMessage(void* p_data)
 {
-	thread(&Client::recevoirMessage, this).detach();
-	return 0;
+	data *dataClient = (data*)p_data;
+	dataClient->client.envoieMessage();
+	return NULL;
 }
-int Client::threadSendMessage()
+void* threadReceiveMessage(void* p_data)
 {
-	thread(&Client::envoieMessage, this).detach();
-	return 0;
+	data *dataClient = (data*)p_data;
+	dataClient->client.recevoirMessage();
+	return NULL;
 }
 
 SOCKET Client::getSocket() const
@@ -378,4 +380,24 @@ string Client::getIpServeur() const
 int Client::getErreur() const
 {
 	return *m_erreur;
+}
+
+void Client::setIp(string ip)
+{
+	*m_ipServeur = ip.c_str();
+}
+
+void Client::setPseudo(string pseudo)
+{
+	*m_pseudo = pseudo;
+}
+
+void Client::setPort(u_short port)
+{
+	*m_port = port;
+}
+
+void Client::setMusicPort(u_short port)
+{
+	*m_portMusique = port;
 }

@@ -13,7 +13,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <string>
-#include <thread>
+#include <pthread.h>
 #include <fstream>
 #include <sstream>
 
@@ -24,6 +24,12 @@
 #define DEFAULT_PSEUDO "client"
 
 #define NOMBRE_OCTET 2048
+
+
+struct data;
+
+void* threadReceiveMessage(void* p_data);
+void* threadSendMessage(void* p_data);
 
 
 /*! \enum Commandes
@@ -207,20 +213,6 @@ public:
 	*/
 	int changePseudo(std::string nouveauPseudo = "client");
 	/*!
-	* \brief Methode permettant l'envoi message par thread
-	*
-	*Methode permettant de recevoir des messages venant du serveur grace a un thread
-	*
-	*/
-	int threadSendMessage();
-	/*!
-	* \brief Methode recevoir message par thread
-	*
-	*Methode permettant de recevoir des messages venant du serveur grace a un thread
-	*
-	*/
-	int threadReceiveMessage();
-	/*!
 	* \brief Methode deconexion
 	*
 	*Methode permettant de se deconecter du serveur
@@ -234,6 +226,15 @@ public:
 	*
 	*/
 	int reconnexion();
+
+
+	void setPseudo(std::string pseudo);
+	void setIp(std::string ip);
+	void setPort(u_short port);
+	void setMusicPort(u_short port);
+
+
+
 	/*!
 	* \brief Destructeur de la classe client
 	*
@@ -258,5 +259,11 @@ private:
 	int *m_resultat;/*!< Variable utilisee pour obtenir le resultat des fonction send(), recv(), ou connect()*/
 	int *m_erreur; /*!< Variable renvoyant le code de la derniere erreur*/
 };
+
+typedef struct data{
+	Client client;
+	pthread_mutex_t mutex;
+
+}data;
 
 #endif   // ECHANGE_H

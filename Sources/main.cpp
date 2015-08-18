@@ -25,6 +25,8 @@ int main(int argc, char* argv[])
 	char ip[20];
 	u_short port;
 	string pseudo;
+	pthread_t thread1;
+	data dataClient;
 
 	cout << "================================Chat socket TCP=================================" << endl;
 	cout << "Adresse IP du serveur: ";
@@ -35,11 +37,16 @@ int main(int argc, char* argv[])
 	cin >> pseudo;
 
 
-	Client c(port, ip, pseudo);
-	c.connexionAuServeur();
-	c.threadReceiveMessage();
-	c.envoieMessage();
 
-	system("Pause");
+	dataClient.client.setIp(ip);
+	dataClient.client.setPseudo(pseudo);
+	dataClient.client.setPort(port);
+
+
+	dataClient.client.connexionAuServeur();
+	pthread_create(&thread1, NULL, threadSendMessage, (void*)&dataClient);
+	dataClient.client.recevoirMessage();
+
+	pthread_join(thread1, NULL);
 	return 0;
 }

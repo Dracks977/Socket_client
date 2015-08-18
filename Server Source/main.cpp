@@ -4,9 +4,7 @@
 
 using namespace std;
 
-
-
-int main()
+int main(int argc, char* argv[])
 {
 	u_short port;
 	string pseudo;
@@ -26,9 +24,10 @@ int main()
 	serverData.server.start();
 	pthread_create(&thread1, NULL, threadAcceptClient, (void*)&serverData);
 	pthread_create(&thread2, NULL, threadSendMessage, (void*)&serverData);
-	serverData.server.listenClient();
+	serverData.server.receiveMessage();
 
 	pthread_join(thread1, NULL);
 	pthread_join(thread2, NULL);
+
 	return 0;
 }
