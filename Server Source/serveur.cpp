@@ -149,11 +149,8 @@ int Server::listenClient()
 						cout << "Erreur lors de la reception du message provenant de " << it->pseudo << endl;
 					}
 				}
-
 			}
-
-		}
-	
+		}	
 	return 0;
 }
 
@@ -184,7 +181,7 @@ int Server::acceptClient()
 
 	u_long arg=0;
 	connectedClient client;
-
+	client.pseudo = new char[30];
 	int sinsize = sizeof(m_cSin);
 	while (*m_message != "/off")
 	{
@@ -192,9 +189,8 @@ int Server::acceptClient()
 		if (client.socket != INVALID_SOCKET)
 		{
 			cout << '\r' << "Nouveau client" << endl;
-			recv(client.socket, m_buffer, 30, 0);
+			recv(client.socket, client.pseudo, 30, 0);
 			send(client.socket, m_pseudo->c_str(), 30, 0);
-			client.pseudo = "test";
 			listeClient.push_back(client);
 		}
 	}

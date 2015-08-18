@@ -14,8 +14,8 @@
 
 #define NOMBRE_OCTET 2048
 
-typedef struct connectedClient;
-typedef struct data;
+struct connectedClient;
+struct data;
 
 void* threadAcceptClient(void* p_data);
 void* threadSendMessage(void* p_data);
@@ -121,7 +121,7 @@ typedef struct data{
 }data;
 
 typedef struct connectedClient{
-	std::string pseudo;
+	char* pseudo;
 	SOCKET socket;
 }connectedClient;
 
