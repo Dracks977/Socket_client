@@ -14,6 +14,11 @@
 
 #define NOMBRE_OCTET 2048
 
+typedef struct connectedClient;
+typedef struct data;
+
+void* threadAcceptClient(void* p_data);
+void* threadSendMessage(void* p_data);
 
 /*! \class Server
 *
@@ -106,10 +111,19 @@ private:
 	int *m_resultat;
 
 
-	std::list<SOCKET> listeClient;
+	std::list<connectedClient> listeClient;
 };
 
+typedef struct data{
+	Server server;
+	pthread_mutex_t mutex;
 
+}data;
+
+typedef struct connectedClient{
+	std::string pseudo;
+	SOCKET socket;
+}connectedClient;
 
 
 #endif
